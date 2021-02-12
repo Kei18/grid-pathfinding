@@ -201,9 +201,8 @@ Path Graph::getPathWithCache(Node* const s, Node* const g, std::mt19937* MT)
       int h_value = g_value + dist(u, g);
       // use real cost whenever available
       auto itr = PATH_TABLE.find(getPathTableKey(u, g));
-      if (itr != PATH_TABLE.end()) {
-        h_value = g_value + itr->second.size() - 1;
-      }
+      if (itr != PATH_TABLE.end()) h_value = g_value + itr->second.size() - 1;
+      // create new node
       AstarNode* m = createNewNode(u, g_value, h_value, n);
       OPEN.push(m);
     }
