@@ -15,7 +15,7 @@ Graph::~Graph()
 }
 
 Path Graph::getPathWithoutCache(Node* s, Node* g, std::mt19937* MT,
-                                const Nodes& prohibited_nodes)
+                                const Nodes& prohibited_nodes) const
 {
   if (s == g) return {};
 

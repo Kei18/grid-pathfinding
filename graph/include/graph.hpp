@@ -5,8 +5,7 @@
 #include "node.hpp"
 
 using Path = std::vector<Node*>;    // < loc_i[0], loc_i[1], ... >
-using Config = std::vector<Node*>;  // < loc_0[t], loc_1[t], ... >
-using Configs = std::vector<Config>;
+
 
 // Pure graph. Base class of Grid class.
 class Graph
@@ -21,7 +20,7 @@ private:
   // get path avoiding several nodes
   Path getPathWithoutCache(Node* const s, Node* const g,
                            std::mt19937* MT = nullptr,
-                           const Nodes& prohibited_nodes = {});
+                           const Nodes& prohibited_nodes = {}) const;
 
   // find a path using cache, if failed then return empty
   Path getPathWithCache(Node* const s, Node* const g,
@@ -56,7 +55,7 @@ public:
   virtual Node* getNode(int id) const { return nullptr; };
 
   // in grid, Manhattan distance
-  virtual int dist(const Node* const v, const Node* const u) { return 0; }
+  virtual int dist(const Node* const v, const Node* const u) const { return 0; }
 
   // get path between two nodes
   Path getPath(Node* const s, Node* const g, const bool cache = true,
@@ -90,7 +89,7 @@ public:
   Node* getNode(int id) const;
   Node* getNode(int x, int y) const;
 
-  int dist(const Node* const v, const Node* const u)
+  int dist(const Node* const v, const Node* const u) const
   {
     return v->manhattanDist(u);
   }
@@ -99,26 +98,3 @@ public:
   int getWidth() const { return width; }
   int getHeight() const { return height; }
 };
-
-// check two configurations are same or not
-[[maybe_unused]] static bool sameConfig(const Config& config_i,
-                                        const Config& config_j)
-{
-  if (config_i.size() != config_j.size()) return false;
-  const int size_i = config_i.size();
-  for (int k = 0; k < size_i; ++k) {
-    if (config_i[k] != config_j[k]) return false;
-  }
-  return true;
-}
-
-[[maybe_unused]] static int getPathCost(const Path& path)
-{
-  int cost = path.size() - 1;
-  auto itr = path.end() - 1;
-  while (itr != path.begin() && *itr == *(itr - 1)) {
-    --cost;
-    --itr;
-  }
-  return cost;
-}
