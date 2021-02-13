@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.16)
 file(GLOB SRCS "./src/*.cpp")
 SET(LIBRARY_NAME lib-graph)
 project(${LIBRARY_NAME})
