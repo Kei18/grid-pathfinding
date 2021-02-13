@@ -60,6 +60,7 @@ public:
   // get path between two nodes
   Path getPath(Node* const s, Node* const g, const bool cache = true,
                std::mt19937* MT = nullptr, const Nodes& prohibited_nodes = {});
+  Path getPath(Node* const s, Node* const g, const Nodes& prohibited_nodes, std::mt19937* MT=nullptr);
 
   // get path length between two nodes
   int pathDist(Node* const s, Node* const g, const bool cache = true,

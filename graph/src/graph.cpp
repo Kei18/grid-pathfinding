@@ -277,6 +277,11 @@ Path Graph::getPath(Node* const s, Node* const g, const bool cache,
   return path;
 }
 
+Path Graph::getPath(Node* const s, Node* const g, const Nodes& prohibited_nodes, std::mt19937* MT)
+{
+  return getPath(s, g, false, MT, prohibited_nodes);
+}
+
 int Graph::pathDist(Node* const s, Node* const g, const bool cache,
                     std::mt19937* MT, const Nodes& prohibited_nodes)
 {
