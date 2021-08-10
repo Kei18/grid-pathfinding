@@ -27,7 +27,8 @@ private:
                         std::mt19937* MT = nullptr);
 
   // helpers for cache
-  std::unordered_map<std::string, Path> PATH_TABLE;
+  std::vector<std::unordered_map<int, Path>*> PATH_TABLE;
+  void initilizePathTable();
   // get key name for cache
   static std::string getPathTableKey(const Node* const s, const Node* const g);
   // register already searched path to cache
