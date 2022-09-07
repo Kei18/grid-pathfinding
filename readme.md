@@ -9,6 +9,23 @@ For usage, see [examples](https://github.com/Kei18/grid-pathfinding/blob/master/
 
 map format: [Pathfinding Benchmarks](https://movingai.com/benchmarks/)
 
+### Mac M1 CPU Support
+
+To build this library for M1 CPUs, you need to add an argument to cmake as such:
+
+``` bash
+cmake .. -DCPU=M1
+```
+
+You should see an output similar to 
+
+``` text
+Configuring grid-pathfinding for M1 Mac.
+-- Configuring done
+-- Generating done
+-- Build files have been written to:  XXX/XX/XXX
+```
+
 ## Licence
 This software is released under the MIT License, see [LICENSE.txt](LICENCE.txt).
 
