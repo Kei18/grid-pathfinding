@@ -12,6 +12,10 @@ Graph::Graph() {}
 Graph::~Graph()
 {
   for (auto v : V) delete v;
+  if (!PATH_TABLE.empty()) {
+    for (auto table : PATH_TABLE) delete table;
+  }
+
 }
 
 Path Graph::getPathWithoutCache(Node* s, Node* g, std::mt19937* MT,
@@ -92,8 +96,19 @@ Path Graph::getPathWithoutCache(Node* s, Node* g, std::mt19937* MT,
   return path;
 }
 
+void Graph::initilizePathTable()
+{
+  for (int i = 0; i < (int)V.size(); ++i) {
+    auto table = new std::unordered_map<int, Path>();
+    PATH_TABLE.push_back(table);
+  }
+}
+
 Path Graph::getPathWithCache(Node* const s, Node* const g, std::mt19937* MT)
 {
+  // initialize cache
+  if (PATH_TABLE.empty()) initilizePathTable();
+
   struct AstarNode {
     Node* v;
     int g;
@@ -179,8 +194,8 @@ Path Graph::getPathWithCache(Node* const s, Node* const g, std::mt19937* MT)
     }
 
     // check whether the remained path has already known
-    auto itr = PATH_TABLE.find(getPathTableKey(n->v, g));
-    if (itr != PATH_TABLE.end()) {
+    auto itr = PATH_TABLE[n->v->id]->find(g->id);
+    if (itr != PATH_TABLE[n->v->id]->end()) {
       // if found then complement the rest
       Path path = itr->second;
       for (auto k = path.begin() + 1; k != path.end(); ++k) {
@@ -200,8 +215,8 @@ Path Graph::getPathWithCache(Node* const s, Node* const g, std::mt19937* MT)
       int g_value = n->g + 1;
       int h_value = g_value + dist(u, g);
       // use real cost whenever available
-      auto itr = PATH_TABLE.find(getPathTableKey(u, g));
-      if (itr != PATH_TABLE.end()) h_value = g_value + itr->second.size() - 1;
+      auto itr = PATH_TABLE[u->id]->find(g->id);
+      if (itr != PATH_TABLE[u->id]->end()) h_value = g_value + itr->second.size() - 1;
       // create new node
       AstarNode* m = createNewNode(u, g_value, h_value, n);
       OPEN.push(m);
@@ -252,7 +267,7 @@ void Graph::registerPath(const Path& path)
   Node* g = *(path.end() - 1);
   do {
     v = tmp[0];
-    PATH_TABLE[getPathTableKey(v, g)] = tmp;
+    PATH_TABLE[v->id]->operator[](g->id) = tmp;
     tmp.erase(tmp.begin());
   } while (tmp.size() > 2);
 }
@@ -265,8 +280,9 @@ Path Graph::getPath(Node* const s, Node* const g, const bool cache,
     return getPathWithoutCache(s, g, MT, prohibited_nodes);
 
   // check cache
-  auto itr = PATH_TABLE.find(getPathTableKey(s, g));
-  if (itr != PATH_TABLE.end()) return itr->second;
+  if (PATH_TABLE.empty()) initilizePathTable();
+  auto itr = PATH_TABLE[s->id]->find(g->id);
+  if (itr != PATH_TABLE[s->id]->end()) return itr->second;
 
   // failed -> use A* search
   Path path = getPathWithCache(s, g, MT);
